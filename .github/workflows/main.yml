@@ -27,6 +27,19 @@ jobs:
       - name: Extract project archive
         run: unzip -o pulsevisuals-1.0.0-project.zip -d .
 
+      - name: Fix Gradle plugin version
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("pulsevisuals/build.gradle")
+          s = p.read_text()
+          s = s.replace(
+              'id \'fabric-loom\' version "${project.loom_version}"',
+              'id \'fabric-loom\' version \'1.14-SNAPSHOT\''
+          )
+          p.write_text(s)
+          PY
+
       - name: Build mod
         working-directory: pulsevisuals
         run: gradle build
